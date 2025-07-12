@@ -18,6 +18,8 @@ interface Post {
   username: string; // Assuming username is part of the post data or can be fetched
 }
 
+import Layout from '../../components/Layout';
+
 export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,25 +140,27 @@ export default function DashboardPage() {
   }
 
   return (
-    <Box>
-      <CreatePostForm onPostCreated={fetchPosts} /> {/* Integrate CreatePostForm and pass callback */}
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mt={6}> {/* Added mt for spacing */}
-        {posts.length === 0 ? (
-          <GridItem colSpan={{ base: 1, md: 3 }}>
-            <Box p={5} shadow="md" borderWidth="1px" borderRadius="lg" textAlign="center">
-              <Text fontSize="xl" fontWeight="bold">No posts yet!</Text>
-              <Text mt={4}>Start by creating your first gratitude post.</Text>
-            </Box>
-          </GridItem>
-        ) : (
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-            />
-          ))
-        )}
-      </SimpleGrid>
-    </Box>
+    <Layout>
+      <Box>
+        <CreatePostForm onPostCreated={fetchPosts} /> {/* Integrate CreatePostForm and pass callback */}
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mt={6}> {/* Added mt for spacing */}
+          {posts.length === 0 ? (
+            <GridItem colSpan={{ base: 1, md: 3 }}>
+              <Box p={5} shadow="md" borderWidth="1px" borderRadius="lg" textAlign="center">
+                <Text fontSize="xl" fontWeight="bold">No posts yet!</Text>
+                <Text mt={4}>Start by creating your first gratitude post.</Text>
+              </Box>
+            </GridItem>
+          ) : (
+            posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+              />
+            ))
+          )}
+        </SimpleGrid>
+      </Box>
+    </Layout>
   );
 }
