@@ -15,6 +15,7 @@ const Navbar: React.FC = () => {
     router.push('/auth/login');
   };
 
+  // TODO(BUG-001): Fix navbar logo redirection. See BUGS.md for details.
   const logoHref = isAuthenticated ? '/feed' : '/';
 
   return (

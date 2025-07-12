@@ -73,14 +73,14 @@ export default function SignupPage() {
           borderRadius: '8px 8px 0 0',
           marginBottom: '0'
         }}>
-          <a href="/" style={{
+          <Link href="/" style={{
             color: 'white',
             textDecoration: 'none',
             fontWeight: 'bold',
             fontSize: '1.25rem'
           }}>
             Gratitude Network
-          </a>
+          </Link>
         </div>
 
         {/* Form Container */}
