@@ -10,7 +10,17 @@ import { SearchFilter, SearchFilterType } from '../../components/Search/SearchFi
 import { api } from '../../lib/api';
 import { Post, User } from '../../lib/types';
 
+import { Suspense } from 'react';
+
 export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+function SearchContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
 

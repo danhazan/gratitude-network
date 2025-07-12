@@ -59,3 +59,4 @@ app.include_router(search_router.router)
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
+

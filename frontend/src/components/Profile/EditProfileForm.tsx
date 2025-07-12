@@ -1,4 +1,3 @@
-
 import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack, useToast } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { User } from '../../lib/types';
@@ -33,7 +32,13 @@ export const EditProfileForm = ({ user, onClose, onProfileUpdated }: EditProfile
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        toast({ title: 'Authentication required', description: 'Please log in to update your profile', status: 'warning', duration: 3000, isClosable: true });
+        toast({ 
+          title: 'Authentication required', 
+          description: 'Please log in to update your profile', 
+          status: 'warning', 
+          duration: 3000, 
+          isClosable: true 
+        });
         return;
       }
 
@@ -48,10 +53,31 @@ export const EditProfileForm = ({ user, onClose, onProfileUpdated }: EditProfile
         token
       );
       onProfileUpdated(updatedProfile);
-      toast({ title: 'Profile updated successfully', status: 'success', duration: 2000, isClosable: true });
+      toast({ 
+        title: 'Profile updated successfully', 
+        status: 'success', 
+        duration: 2000, 
+        isClosable: true 
+      });
       onClose();
-    } catch (error: any) {
-      toast({ title: 'Error updating profile', description: error.message, status: 'error', duration: 3000, isClosable: true });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast({ 
+          title: 'Error updating profile', 
+          description: error.message, 
+          status: 'error', 
+          duration: 3000, 
+          isClosable: true 
+        });
+      } else {
+        toast({ 
+          title: 'Error updating profile', 
+          description: 'An unknown error occurred', 
+          status: 'error', 
+          duration: 3000, 
+          isClosable: true 
+        });
+      }
     } finally {
       setLoading(false);
     }

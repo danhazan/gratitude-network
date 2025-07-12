@@ -1,7 +1,8 @@
 import { Box, Text, Avatar, Flex, HStack, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { FiHeart, FiMessageSquare, FiShare2 } from 'react-icons/fi';
-import { Post } from '../lib/types';
+import { Post, User } from '../lib/types';
 import NextLink from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { CommentSection } from './Comments/CommentSection';
 import { api } from '../lib/api';
@@ -46,8 +47,12 @@ export const PostCard = ({ post, user }: PostCardProps) => {
         setCurrentHeartCount(prev => prev + 1);
       }
       setIsHearted(prev => !prev);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to toggle heart.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || 'Failed to toggle heart.');
+      } else {
+        toast.error('An unknown error occurred while toggling heart.');
+      }
     }
   };
 
@@ -67,7 +72,7 @@ export const PostCard = ({ post, user }: PostCardProps) => {
 
       {post.image_url && (
         <Box mb={4}>
-          <img src={post.image_url} alt="Post image" style={{ borderRadius: '8px' }} />
+          <Image src={post.image_url} alt="Post image" style={{ borderRadius: '8px' }} width={500} height={300} objectFit="cover" />
         </Box>
       )}
 

@@ -4,11 +4,11 @@ import { Input, Button, Flex, useToast } from '@chakra-ui/react';
 
 interface CommentInputProps {
   postId: string;
-  onCommentAdded: () => void;
+  onCommentAdded: (content: string) => void;
   isLoading: boolean;
 }
 
-export const CommentInput = ({ postId, onCommentAdded, isLoading }: CommentInputProps) => {
+export const CommentInput = ({ onCommentAdded, isLoading }: CommentInputProps) => {
   const [commentContent, setCommentContent] = useState('');
   const toast = useToast();
 
@@ -19,7 +19,7 @@ export const CommentInput = ({ postId, onCommentAdded, isLoading }: CommentInput
     }
     // Call API to add comment
     // This will be handled by the parent CommentSection component
-    onCommentAdded(); // Trigger parent to refetch comments
+    onCommentAdded(commentContent); // Trigger parent to refetch comments
     setCommentContent('');
   };
 

@@ -1,13 +1,12 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { api } from '../../../lib/api';
 import { User, Post, Follow } from '../../../lib/types';
 import { PostCard } from '../../../components/PostCard';
 import toast from 'react-hot-toast';
-import { EditProfileForm } from '../../../components/Profile/EditProfileForm';
 import { useAuth } from '../../../context/AuthContext';
 import Link from 'next/link';
 
@@ -45,8 +44,12 @@ export default function ProfilePage() {
           }
         }
 
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch profile data.');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || 'Failed to fetch profile data.');
+        } else {
+          setError('An unknown error occurred while fetching profile data.');
+        }
         console.error(err);
       } finally {
         setLoading(false);
@@ -72,14 +75,16 @@ export default function ProfilePage() {
         toast.success(`Now following ${user?.username}`);
       }
       setIsFollowing(prev => !prev);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to toggle follow status.');
-    }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || 'Failed to toggle follow status.');
+      } else {
+        toast.error('An unknown error occurred while toggling follow status.');
+      }
+    };
   };
 
-  const handleProfileUpdated = (updatedUser: User) => {
-    setUser(updatedUser);
-  };
+  
 
   if (loading || authLoading) {
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;
@@ -116,14 +121,14 @@ export default function ProfilePage() {
           borderRadius: '8px 8px 0 0',
           marginBottom: '0'
         }}>
-          <a href="/" style={{
+          <Link href="/" style={{
             color: 'white',
             textDecoration: 'none',
             fontWeight: 'bold',
             fontSize: '1.25rem'
           }}>
             Gratitude Network
-          </a>
+          </Link>
         </div>
         <div style={{ padding: '2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem' }}>
@@ -145,7 +150,7 @@ export default function ProfilePage() {
               </div>
             </div>
             {currentUser && currentUser.id === userId ? (
-              <button style={{ backgroundColor: '#38a169', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.25rem', marginTop: '1rem', border: 'none', cursor: 'pointer' }} onClick={() => alert('Edit Profile clicked')}> {/* Simplified for now */}
+              <button style={{ backgroundColor: '#38a169', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.25rem', marginTop: '1rem', border: 'none', cursor: 'pointer' }} onClick={() => alert('Edit Profile clicked')}>
                 Edit Profile
               </button>
             ) : (
@@ -165,11 +170,6 @@ export default function ProfilePage() {
               <PostCard key={post.id} post={post} user={user} />
             ))}
           </div>
-
-          {/* Simplified Modal for now */}
-          {/* <Modal isOpen={isOpen} onClose={onClose}> */}
-            {/* Modal content here */}
-          {/* </Modal> */}
         </div>
       </div>
     </div>

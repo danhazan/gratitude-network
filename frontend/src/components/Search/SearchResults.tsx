@@ -24,7 +24,7 @@ export const SearchResults = ({ results, loading, query }: SearchResultsProps) =
   const hasResults = results.posts.length > 0 || results.users.length > 0;
 
   if (!hasResults) {
-    return <Text>No results found for "{query}"</Text>;
+    return <Text>No results found for &quot;{query}&quot;</Text>;
   }
 
   return (

@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
 export default function SignupPage() {
@@ -15,6 +14,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Signup logic here
     setLoading(true);
 
     try {
@@ -153,6 +153,7 @@ export default function SignupPage() {
 
             <button
               type="submit"
+              disabled={loading}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -162,10 +163,11 @@ export default function SignupPage() {
                 borderRadius: '6px',
                 fontSize: '1rem',
                 fontWeight: 'bold',
-                cursor: 'pointer'
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1
               }}
             >
-              Sign Up
+              {loading ? 'Signing up...' : 'Sign Up'}
             </button>
           </form>
           <div style={{ marginTop: '1.5rem', textAlign: 'center', color: '#4a5568' }}>
