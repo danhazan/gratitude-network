@@ -38,7 +38,7 @@ export default function LoginPage() {
       localStorage.setItem("accessToken", data.access_token);
       toast.success("Login successful!"); // Display success to user
       console.log("Login successful!");
-      router.push("/dashboard");
+      router.push("/feed");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(`Login error: ${error.message}`); // Display error to user
