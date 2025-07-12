@@ -9,7 +9,7 @@ import time
 request_counts = defaultdict(list)
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, limit: int = 50, window: int = 3600): # 50 requests per hour
+    def __init__(self, app, limit: int = 5000, window: int = 3600): # 50 requests per hour
         super().__init__(app)
         self.limit = limit
         self.window = window
