@@ -127,7 +127,11 @@ export default function ProfilePage() {
         </div>
         <div style={{ padding: '2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem' }}>
-            <img src={user.profile_image_url} alt={user.username} style={{ width: '96px', height: '96px', borderRadius: '50%', marginBottom: '0.5rem' }} />
+            <div style={{ width: '96px', height: '96px', borderRadius: '50%', backgroundColor: '#cbd5e0', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="48px" height="48px">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
             <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold' }}>{user.username}</h1>
             <p style={{ textAlign: 'center' }}>{user.bio}</p>
             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem' }}>

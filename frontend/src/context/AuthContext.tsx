@@ -21,31 +21,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (token) {
-      // In a real app, you'd verify the token with the backend
-      // and fetch user details. For now, we'll assume it's valid
-      // and try to fetch the user's profile.
       const fetchUser = async () => {
         try {
-          const currentUser = await api.getUserProfile('me', token); // Pass token
+          const currentUser = await api.getUserProfile('me', token);
           setUser(currentUser);
           setIsAuthenticated(true);
         } catch (error) {
           console.error('Failed to fetch user profile:', error);
-          localStorage.removeItem('accessToken'); // Clear invalid token
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('accessToken');
+          }
+          setIsAuthenticated(false);
         } finally {
           setLoading(false);
         }
       };
       fetchUser();
     } else {
+      setIsAuthenticated(false);
       setLoading(false);
     }
-  }, []);
+  }, []); // Removed localStorage from dependency array to prevent SSR issues
 
   const login = async (token: string) => {
-    localStorage.setItem('accessToken', token);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('accessToken', token);
+    }
     // Re-fetch user data after login
     try {
       const currentUser = await api.getUserProfile('me', token); // Pass token
@@ -57,7 +60,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken');
+    }
     setUser(null);
     setIsAuthenticated(false);
   };
