@@ -5,12 +5,14 @@ import { Button, Input, Box, Flex, Stack, Heading, Text } from "@chakra-ui/react
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast"; // Import toast
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,7 @@ export default function LoginPage() {
 
       const data = await response.json();
       localStorage.setItem("accessToken", data.access_token);
+      await login(data.access_token); // Await the login function from AuthContext
       toast.success("Login successful!"); // Display success to user
       console.log("Login successful!");
       router.push("/feed");

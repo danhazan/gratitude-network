@@ -44,19 +44,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const login = (token: string) => {
+  const login = async (token: string) => {
     localStorage.setItem('accessToken', token);
     // Re-fetch user data after login
-    const fetchUser = async () => {
-      try {
-        const currentUser = await api.getUserProfile('me', token); // Pass token
-        setUser(currentUser);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Failed to fetch user profile after login:', error);
-      }
-    };
-    fetchUser();
+    try {
+      const currentUser = await api.getUserProfile('me', token); // Pass token
+      setUser(currentUser);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Failed to fetch user profile after login:', error);
+    }
   };
 
   const logout = () => {
