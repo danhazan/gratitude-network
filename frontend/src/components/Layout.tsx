@@ -30,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const handleLogout = () => {
     logout();
     toast.success('Logged out successfully!');
-    router.push('/login');
+    router.push('/auth/login');
     onClose(); // Close drawer on logout
   };
 
@@ -78,7 +78,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link href="/login">
                 <Button variant="ghost" colorScheme="whiteAlpha">Login</Button>
               </Link>
-              <Link href="/signup">
+              <Link href="/auth/signup">
                 <Button variant="ghost" colorScheme="whiteAlpha">Sign Up</Button>
               </Link>
             </HStack>
