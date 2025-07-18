@@ -3,20 +3,8 @@
 import { Box, Heading, Text, Button, Stack, Container } from "@chakra-ui/react";
 import Layout from "@/components/Layout";
 import Link from "next/link";
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
-  const { isAuthenticated, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && isAuthenticated) {
-      router.push('/feed');
-    }
-  }, [isAuthenticated, loading, router]);
-
   return (
     <Layout>
       <Container maxW="container.lg" py={10} textAlign="center">

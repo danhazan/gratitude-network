@@ -21,48 +21,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    const token = localStorage.getItem('accessToken');
     if (token) {
+      // In a real app, you'd verify the token with the backend
+      // and fetch user details. For now, we'll assume it's valid
+      // and try to fetch the user's profile.
       const fetchUser = async () => {
         try {
-          const currentUser = await api.getUserProfile('me', token);
+          const currentUser = await api.getUserProfile('me', token); // Pass token
           setUser(currentUser);
           setIsAuthenticated(true);
         } catch (error) {
           console.error('Failed to fetch user profile:', error);
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('accessToken');
-          }
-          setIsAuthenticated(false);
+          localStorage.removeItem('accessToken'); // Clear invalid token
         } finally {
           setLoading(false);
         }
       };
       fetchUser();
     } else {
-      setIsAuthenticated(false);
       setLoading(false);
     }
-  }, []); // Removed localStorage from dependency array to prevent SSR issues
+  }, []);
 
-  const login = async (token: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', token);
-    }
+  const login = (token: string) => {
+    localStorage.setItem('accessToken', token);
     // Re-fetch user data after login
-    try {
-      const currentUser = await api.getUserProfile('me', token); // Pass token
-      setUser(currentUser);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Failed to fetch user profile after login:', error);
-    }
+    const fetchUser = async () => {
+      try {
+        const currentUser = await api.getUserProfile('me', token); // Pass token
+        setUser(currentUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Failed to fetch user profile after login:', error);
+      }
+    };
+    fetchUser();
   };
 
   const logout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken');
-    }
+    localStorage.removeItem('accessToken');
     setUser(null);
     setIsAuthenticated(false);
   };

@@ -30,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const handleLogout = () => {
     logout();
     toast.success('Logged out successfully!');
-    router.push('/auth/login');
+    router.push('/login');
     onClose(); // Close drawer on logout
   };
 
@@ -63,8 +63,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
           {isAuthenticated ? (
             <HStack spacing={4}>
-              <Link href="/feed">
-                <Button variant="ghost" colorScheme="whiteAlpha">Feed</Button>
+              <Link href="/dashboard">
+                <Button variant="ghost" colorScheme="whiteAlpha">Dashboard</Button>
               </Link>
               {user && (
                 <Link href={`/profiles/${user.id}`}>
@@ -75,10 +75,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </HStack>
           ) : (
             <HStack spacing={4}>
-              <Link href="/auth/login">
+              <Link href="/login">
                 <Button variant="ghost" colorScheme="whiteAlpha">Login</Button>
               </Link>
-              <Link href="/auth/signup">
+              <Link href="/signup">
                 <Button variant="ghost" colorScheme="whiteAlpha">Sign Up</Button>
               </Link>
             </HStack>
@@ -115,8 +115,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <VStack as="nav" spacing={4} alignItems="flex-start">
               {isAuthenticated ? (
                 <>
-                  <Link href="/feed" onClick={onClose}>
-                    <Button variant="ghost" colorScheme="whiteAlpha" width="full" justifyContent="flex-start">Feed</Button>
+                  <Link href="/dashboard" onClick={onClose}>
+                    <Button variant="ghost" colorScheme="whiteAlpha" width="full" justifyContent="flex-start">Dashboard</Button>
                   </Link>
                   {user && (
                     <Link href={`/profiles/${user.id}`} onClick={onClose}>
@@ -127,10 +127,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" onClick={onClose}>
+                  <Link href="/login" onClick={onClose}>
                     <Button variant="ghost" colorScheme="whiteAlpha" width="full" justifyContent="flex-start">Login</Button>
                   </Link>
-                  <Link href="/auth/signup" onClick={onClose}>
+                  <Link href="/signup" onClick={onClose}>
                     <Button variant="ghost" colorScheme="whiteAlpha" width="full" justifyContent="flex-start">Sign Up</Button>
                   </Link>
                 </>

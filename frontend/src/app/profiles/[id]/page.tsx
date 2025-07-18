@@ -1,15 +1,15 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import { Container, Heading, Text, Spinner, Avatar, VStack, HStack, Divider, SimpleGrid, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { api } from '../../../lib/api';
 import { User, Post, Follow } from '../../../lib/types';
-import { PostCard } from '../../../components/PostCard';
+import { PostCard } from '../../../components/PostCard'; // Assuming a PostCard component exists
 import toast from 'react-hot-toast';
 import { EditProfileForm } from '../../../components/Profile/EditProfileForm';
 import { useAuth } from '../../../context/AuthContext';
-import Link from 'next/link';
 
 export default function ProfilePage() {
   const params = useParams();
@@ -21,7 +21,7 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const { user: currentUser, loading: authLoading } = useAuth();
-  
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (!userId) return;
@@ -45,8 +45,12 @@ export default function ProfilePage() {
           }
         }
 
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch profile data.');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || 'Failed to fetch profile data.');
+        } else {
+          setError('An unknown error occurred while fetching profile data.');
+        }
         console.error(err);
       } finally {
         setLoading(false);
@@ -72,8 +76,12 @@ export default function ProfilePage() {
         toast.success(`Now following ${user?.username}`);
       }
       setIsFollowing(prev => !prev);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to toggle follow status.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || 'Failed to toggle follow status.');
+      } else {
+        toast.error('An unknown error occurred while toggling follow status.');
+      }
     }
   };
 
@@ -82,96 +90,65 @@ export default function ProfilePage() {
   };
 
   if (loading || authLoading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;
+    return <Spinner />;
   }
 
   if (error) {
-    return <div style={{ color: 'red' }}>{error}</div>;
+    return <Text color="red.500">{error}</Text>;
   }
 
   if (!user) {
-    return <div>User not found.</div>;
+    return <Text>User not found.</Text>;
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f7fafc'
-    }}>
-      <div style={{
-        maxWidth: '960px',
-        width: '100%',
-        margin: '0 1rem',
-        backgroundColor: 'white',
-        borderRadius: '0.5rem',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        {/* Blue Navigation Bar */}
-        <div style={{
-          backgroundColor: '#3182ce',
-          padding: '1rem',
-          borderRadius: '8px 8px 0 0',
-          marginBottom: '0'
-        }}>
-          <a href="/" style={{
-            color: 'white',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '1.25rem'
-          }}>
-            Gratitude Network
-          </a>
-        </div>
-        <div style={{ padding: '2rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem' }}>
-            <div style={{ width: '96px', height: '96px', borderRadius: '50%', backgroundColor: '#cbd5e0', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="48px" height="48px">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-              </svg>
-            </div>
-            <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold' }}>{user.username}</h1>
-            <p style={{ textAlign: 'center' }}>{user.bio}</p>
-            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontWeight: 'bold' }}>{user.posts_count}</span>
-                <span>Posts</span>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontWeight: 'bold' }}>{user.hearts_received}</span>
-                <span>Hearts</span>
-              </div>
-            </div>
-            {currentUser && currentUser.id === userId ? (
-              <button style={{ backgroundColor: '#38a169', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.25rem', marginTop: '1rem', border: 'none', cursor: 'pointer' }} onClick={() => alert('Edit Profile clicked')}> {/* Simplified for now */}
-                Edit Profile
-              </button>
-            ) : (
-              currentUser && (
-                <button style={{ backgroundColor: isFollowing ? '#e53e3e' : '#3182ce', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.25rem', marginTop: '1rem', border: 'none', cursor: 'pointer' }} onClick={handleFollowToggle}>
-                  {isFollowing ? 'Unfollow' : 'Follow'}
-                </button>
-              )
-            )}
-          </div>
+    <Container maxW="container.lg" py={8}>
+      <VStack spacing={4} align="center">
+        <Avatar size="2xl" name={user.username} src={user.profile_image_url} />
+        <Heading>{user.username}</Heading>
+        <Text textAlign="center">{user.bio}</Text>
+        <HStack spacing={6}>
+          <VStack>
+            <Text fontWeight="bold">{user.posts_count}</Text>
+            <Text>Posts</Text>
+          </VStack>
+          <VStack>
+            <Text fontWeight="bold">{user.hearts_received}</Text>
+            <Text>Hearts</Text>
+          </VStack>
+        </HStack>
+        {currentUser && currentUser.id === userId ? (
+          <Button onClick={onOpen} colorScheme="teal" mt={4}>
+            Edit Profile
+          </Button>
+        ) : (
+          currentUser && (
+            <Button onClick={handleFollowToggle} colorScheme={isFollowing ? 'red' : 'blue'} mt={4}>
+              {isFollowing ? 'Unfollow' : 'Follow'}
+            </Button>
+          )
+        )}
+      </VStack>
 
-          <hr style={{ margin: '2rem 0', borderColor: '#e2e8f0' }} />
+      <Divider my={8} />
 
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Posts</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
-            {posts.map(post => (
-              <PostCard key={post.id} post={post} user={user} />
-            ))}
-          </div>
+      <Heading size="lg" mb={4}>Posts</Heading>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+        {posts.map(post => (
+          <PostCard key={post.id} post={post} user={user} />
+        ))}
+      </SimpleGrid>
 
-          {/* Simplified Modal for now */}
-          {/* <Modal isOpen={isOpen} onClose={onClose}> */}
-            {/* Modal content here */}
-          {/* </Modal> */}
-        </div>
-      </div>
-    </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Profile</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <EditProfileForm user={user} onClose={onClose} onProfileUpdated={handleProfileUpdated} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Container>
   );
 }

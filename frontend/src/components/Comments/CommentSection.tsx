@@ -21,8 +21,12 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
     try {
       const fetchedComments = await api.getComments(postId);
       setComments(fetchedComments);
-    } catch (error: any) {
-      toast({ title: 'Error fetching comments', description: error.message, status: 'error', duration: 3000, isClosable: true });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast({ title: 'Error fetching comments', description: error.message, status: 'error', duration: 3000, isClosable: true });
+      } else {
+        toast({ title: 'Error fetching comments', description: 'An unknown error occurred', status: 'error', duration: 3000, isClosable: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -39,8 +43,12 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       await api.addComment(postId, content, token);
       toast({ title: 'Comment added', status: 'success', duration: 2000, isClosable: true });
       fetchComments(); // Refetch comments after adding new one
-    } catch (error: any) {
-      toast({ title: 'Error adding comment', description: error.message, status: 'error', duration: 3000, isClosable: true });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast({ title: 'Error adding comment', description: error.message, status: 'error', duration: 3000, isClosable: true });
+      } else {
+        toast({ title: 'Error adding comment', description: 'An unknown error occurred', status: 'error', duration: 3000, isClosable: true });
+      }
     } finally {
       setAddingComment(false);
     }
@@ -66,7 +74,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
           ))
         )}
       </VStack>
-      <CommentInput postId={postId} onCommentAdded={handleAddComment} isLoading={addingComment} />
+      <CommentInput onCommentAdded={handleAddComment} isLoading={addingComment} />
     </Box>
   );
 };

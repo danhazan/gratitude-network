@@ -38,6 +38,7 @@ export const EditProfileForm = ({ user, onClose, onProfileUpdated }: EditProfile
       }
 
       const updatedProfile = await api.updateUserProfile(
+        user.id,
         {
           username,
           bio,
@@ -50,8 +51,12 @@ export const EditProfileForm = ({ user, onClose, onProfileUpdated }: EditProfile
       onProfileUpdated(updatedProfile);
       toast({ title: 'Profile updated successfully', status: 'success', duration: 2000, isClosable: true });
       onClose();
-    } catch (error: any) {
-      toast({ title: 'Error updating profile', description: error.message, status: 'error', duration: 3000, isClosable: true });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast({ title: 'Error updating profile', description: error.message, status: 'error', duration: 3000, isClosable: true });
+      } else {
+        toast({ title: 'Error updating profile', description: 'An unknown error occurred', status: 'error', duration: 3000, isClosable: true });
+      }
     } finally {
       setLoading(false);
     }

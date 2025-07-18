@@ -1,20 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import { useAuth } from '@/context/AuthContext';
-import Link from 'next/link';
+import Link from "next/link";
+import { Button, Input, Box, Flex, Stack, Heading, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast"; // Import toast
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Login logic here
+    setLoading(true);
+
     try {
       const response = await fetch("http://localhost:8000/auth/login", {
         method: "POST",
@@ -35,10 +36,9 @@ export default function LoginPage() {
 
       const data = await response.json();
       localStorage.setItem("accessToken", data.access_token);
-      await login(data.access_token); // Await the login function from AuthContext
       toast.success("Login successful!"); // Display success to user
       console.log("Login successful!");
-      router.push("/feed");
+      router.push("/dashboard");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(`Login error: ${error.message}`); // Display error to user
@@ -49,129 +49,60 @@ export default function LoginPage() {
       }
       setPassword(""); // Clear password on any error
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f7fafc'
-    }}>
-      <div style={{
-        maxWidth: '400px',
-        width: '100%',
-        margin: '0 1rem'
-      }}>
-        {/* Blue Navigation Bar */}
-        <div style={{
-          backgroundColor: '#3182ce',
-          padding: '1rem',
-          borderRadius: '8px 8px 0 0',
-          marginBottom: '0'
-        }}>
-          <a href="/" style={{
-            color: 'white',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '1.25rem'
-          }}>
-            Gratitude Network
-          </a>
-        </div>
-
-        {/* Form Container */}
-        <div style={{
-          backgroundColor: 'white',
-          padding: '2rem',
-          borderRadius: '0 0 8px 8px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h1 style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            marginBottom: '1.5rem',
-            textAlign: 'center'
-          }}>
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bgGradient="linear(to-br, primary.50, accent.100)"
+    >
+      <Box bg="white" p={8} rounded="lg" shadow="xl" w="full" maxW="md">
+        <Heading as="h2" size="xl" textAlign="center" color="primary.700" mb={6}>
+          Welcome Back!
+        </Heading>
+        <Stack as="form" spacing={4} onSubmit={handleSubmit}>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button type="submit" width="full" isLoading={loading} colorScheme="primary">
             Login
-          </h1>
-
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '1rem' }}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
-
-            <div style={{ marginBottom: '1.5rem' }}>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                  fontSize: '1rem'
-                }}
-              />
-            </div>
-
-            <button
-              type="submit"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: '#3182ce',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-            >
-              Login
-            </button>
-          </form>
-          <div style={{ marginTop: '1.5rem', textAlign: 'center', color: '#4a5568' }}>
-            <p>Or login with:</p>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.75rem', gap: '0.75rem' }}>
-              <button style={{ flex: 1, padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '6px' }} disabled>
-                Google
-              </button>
-              <button style={{ flex: 1, padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '6px' }} disabled>
-                Facebook
-              </button>
-            </div>
-          </div>
-          <p style={{ marginTop: '1.5rem', textAlign: 'center', color: '#4a5568', fontSize: '0.875rem' }}>
-            Don&apos;t have an account?{" "}
-            <Link href="/auth/signup">
-              <span style={{ color: '#3182ce', textDecoration: 'none', fontWeight: '500' }}>
-                Sign Up
-              </span>
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Stack>
+        <Box mt={6} textAlign="center" color="gray.600">
+          <Text>Or login with:</Text>
+          <Flex justify="center" mt={3} gap={3}>
+            <Button variant="outline" flex={1} isDisabled={true}>
+              Google
+            </Button>
+            <Button variant="outline" flex={1} isDisabled={true}>
+              Facebook
+            </Button>
+          </Flex>
+        </Box>
+        <Text mt={6} textAlign="center" color="gray.600" fontSize="sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/auth/signup" passHref>
+            <Text as="span" color="primary.600" _hover={{ textDecoration: "underline" }} fontWeight="medium">
+              Sign Up
+            </Text>
+          </Link>
+        </Text>
+      </Box>
+    </Flex>
   );
 }

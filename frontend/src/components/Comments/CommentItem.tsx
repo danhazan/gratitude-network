@@ -13,10 +13,10 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
   return (
     <Box p={3} bg={bgColor} borderRadius="md" mb={2}>
       <Flex align="center" mb={2}>
-        <Avatar as={NextLink} href={`/profiles/${comment.user.id}`} size="sm" name={comment.user.username} src={comment.user.profile_image_url} />
+        <Avatar as={NextLink} href={`/profiles/${comment.user?.id}`} size="sm" name={comment.user?.username} src={comment.user?.profile_image_url} />
         <Text ml={2} fontWeight="bold">
-          <NextLink href={`/profiles/${comment.user.id}`} passHref>
-            {comment.user.username}
+          <NextLink href={`/profiles/${comment.user?.id}`} passHref>
+            {comment.user?.username}
           </NextLink>
         </Text>
         <Text ml={2} fontSize="sm" color="gray.500">
