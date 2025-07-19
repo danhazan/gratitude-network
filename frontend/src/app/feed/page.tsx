@@ -30,7 +30,7 @@ export default function FeedPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login'); // Redirect to login if not authenticated
+      router.replace('/auth/login'); // Use replace to avoid adding to history
     }
   }, [isAuthenticated, authLoading, router]);
 
